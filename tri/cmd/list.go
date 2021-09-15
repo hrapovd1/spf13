@@ -29,7 +29,7 @@ var listCmd = &cobra.Command{
 	Short: "show todo(s)",
 	Long:  `show list todo(s) from file`,
 	Run: func(cmd *cobra.Command, args []string) {
-		items, err := todo.ReadItems("/home/dima/go/spf13/.tridos.json")
+		items, err := todo.ReadItems(dataFile)
 		if err != nil {
 			log.Printf("%v", err)
 		}
