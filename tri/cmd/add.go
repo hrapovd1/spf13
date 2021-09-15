@@ -18,6 +18,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/hrapovd1/spf13/tri/todo"
 	"github.com/spf13/cobra"
 )
 
@@ -38,9 +39,13 @@ to quickly create a Cobra application.`,
 }
 
 func addRun(cmd *cobra.Command, args []string) {
+	items := []todo.Item{}
 	for _, x := range args {
+		items = append(items,
+			todo.Item{Text: x})
 		fmt.Println(x)
 	}
+	fmt.Println(items)
 }
 
 func init() {
