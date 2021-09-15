@@ -22,6 +22,19 @@ func (i *Item) SetPriority(pri int) {
 	}
 }
 
+func (i *Item) PrettyP() string {
+	switch i.Priority {
+	case 1:
+		return "(1)"
+	case 2:
+		return "(2)"
+	case 3:
+		return "(3)"
+	default:
+		return " "
+	}
+}
+
 func SaveItems(filename string, items []Item) error {
 	b, err := json.Marshal(items)
 	if err != nil {
