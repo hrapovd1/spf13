@@ -18,58 +18,53 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 	"sort"
-	"text/tabwriter"
+	"strconv"
 
 	"github.com/hrapovd1/spf13/tri/todo"
 	"github.com/spf13/cobra"
 )
 
-// listCmd represents the list command
-var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "show todo(s)",
-	Long:  `show list todo(s) from file`,
-	Run:   listRun,
+// doneCmd represents the done command
+var doneCmd = &cobra.Command{
+	Use:   "done",
+	Short: "mark todo done",
+	Long:  `Mark todo(s) as done`,
+	Run:   doneRun,
 }
 
-var (
-	doneOpt bool
-	allOpt  bool
-)
-
-func listRun(cmd *cobra.Command, args []string) {
+func doneRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadItems(dataFile)
+	i, err := strconv.Atoi(args[0])
 	if err != nil {
-		log.Printf("%v", err)
+		log.Fatalln(args[0], "is not a valid label\n", err)
 	}
 
-	//sort.Sort(sort.Reverse(todo.ByPri(items)))
-	sort.Sort(todo.ByPri(items))
+	if i > 0 && i < len(items) {
+		items[i-1].Done = true
+		fmt.Printf("%q %v\n", items[i-1].Text, "marked done")
 
-	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
-	fmt.Fprintln(w, "Ord"+"\t"+"Done"+"\t"+"Prior"+"\t"+"Todo"+"\t")
-	for _, i := range items {
-		if allOpt || i.Done == doneOpt {
-			fmt.Fprintln(w, i.Label()+"\t"+i.PrettyDone()+"\t"+i.PrettyP()+"\t"+i.Text+"\t")
+		sort.Sort(todo.ByPri(items))
+		err := todo.SaveItems(dataFile, items)
+		if err != nil {
+			log.Println(err, "Error when save items")
 		}
+
+	} else {
+		log.Println(i, "doesn't match any items")
 	}
-	w.Flush()
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(doneCmd)
 
 	// Here you will define your flags and configuration settings.
-	listCmd.Flags().BoolVar(&doneOpt, "done", false, "Show 'Done' Todos")
-	listCmd.Flags().BoolVar(&allOpt, "all", false, "Show all Todos")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// doneCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// doneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
