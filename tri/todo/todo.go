@@ -69,3 +69,16 @@ func ReadItems(filename string) ([]Item, error) {
 	}
 	return items, nil
 }
+
+// ByPri implements sort.Interface for []Item based on
+// the Priority & position field.
+type ByPri []Item
+
+func (s ByPri) Len() int      { return len(s) }
+func (s ByPri) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+func (s ByPri) Less(i, j int) bool {
+	if s[i].Priority == s[j].Priority {
+		return s[i].position < s[j].position
+	}
+	return s[i].Priority < s[j].Priority
+}
