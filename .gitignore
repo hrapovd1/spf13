@@ -11,6 +11,8 @@ tri/tri
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 .tridos.json
+*.cover
+*.lcov
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
