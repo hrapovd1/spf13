@@ -118,3 +118,53 @@ func TestLabel(t *testing.T) {
 	}
 }
 */
+
+func TestLen(t *testing.T) {
+	count := 3
+	items := make(todo.ByPri, count)
+	require.Equal(t, count, items.Len())
+}
+
+func TestSwap(t *testing.T) {
+	items := todo.ByPri{
+		{Text: "1", Priority: 1, Done: false},
+		{Text: "2", Priority: 2, Done: false},
+		{Text: "3", Priority: 3, Done: false},
+		{Text: "4", Priority: 4, Done: false},
+	}
+	tests := []struct {
+		i int
+		j int
+	}{
+		{0, 2},
+		{3, 0},
+		{1, 2},
+	}
+	for _, test := range tests {
+		copyItems := make(todo.ByPri, 4)
+		require.Equal(t, len(items), copy(copyItems, items))
+		copyItems.Swap(test.i, test.j)
+		require.Equal(t, items[test.i].Text, copyItems[test.j].Text)
+		require.Equal(t, items[test.j].Text, copyItems[test.i].Text)
+	}
+}
+
+func TestLess(t *testing.T) {
+	items := todo.ByPri{
+		{Text: "1", Priority: 1, Done: false},
+		{Text: "2", Priority: 2, Done: false},
+		{Text: "3", Priority: 3, Done: false},
+		{Text: "4", Priority: 4, Done: false},
+	}
+	tests := []struct {
+		i int
+		j int
+	}{
+		{0, 2},
+		{3, 0},
+		{1, 2},
+	}
+	for _, test := range tests {
+		require.Equal(t, test.i < test.j, items.Less(test.i, test.j))
+	}
+}
